@@ -717,6 +717,8 @@ on C<Data::Dumper> by Gurusamy Sarathy <gsar@umich.edu>.
  Copyright 1998-2010 Gisle Aas.
  Copyright 1996-1998 Gurusamy Sarathy.
 
+This distribution is currenly maintained by Breno G. de Oliveira.
+
 This library is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.
 
