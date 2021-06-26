@@ -13,10 +13,11 @@ $VERSION = "1.24";
 $DEBUG = 0;
 
 use overload ();
-use vars qw(%seen %refcnt @dump @fixup %require $TRY_BASE64 @FILTERS $INDENT);
+use vars qw(%seen %refcnt @dump @fixup %require $TRY_BASE64 @FILTERS $INDENT $LINEWIDTH);
 
 $TRY_BASE64 = 50 unless defined $TRY_BASE64;
 $INDENT = "  " unless defined $INDENT;
+$LINEWIDTH = 60 unless defined $LINEWIDTH;
 
 sub dump
 {
@@ -329,7 +330,7 @@ sub _dump
 	my $nl = "";
 	my $klen_pad = 0;
 	my $tmp = "@keys @vals";
-	if (length($tmp) > 60 || $tmp =~ /\n/ || $tied) {
+	if (length($tmp) > $LINEWIDTH || $tmp =~ /\n/ || $tied) {
 	    $nl = "\n";
 
 	    # Determine what padding to add
@@ -469,7 +470,7 @@ sub format_list
 	}
     }
     my $tmp = "@_";
-    if ($comment || (@_ > $indent_lim && (length($tmp) > 60 || $tmp =~ /\n/))) {
+    if ($comment || (@_ > $indent_lim && (length($tmp) > $LINEWIDTH || $tmp =~ /\n/))) {
 	my @elem = @_;
 	for (@elem) { s/^/$INDENT/gm; }
 	return "\n" . ($comment ? "$INDENT# $comment\n" : "") .
@@ -674,6 +675,11 @@ be valid Perl.
 
 How long must a binary string be before we try to use the base64 encoding
 for the dump output.  The default is 50.  Set it to 0 to disable base64 dumps.
+
+=item $Data::Dump::LINEWIDTH
+
+This controls how wide the string should before we add a line break.  The
+default is 60.
 
 =back
 
