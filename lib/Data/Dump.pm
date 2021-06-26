@@ -572,10 +572,9 @@ Data::Dump - Pretty printing of data structures
 
 =head1 DESCRIPTION
 
-This module provide a few functions that traverse their
-argument and produces a string as its result.  The string contains
-Perl code that, when C<eval>ed, produces a deep copy of the original
-arguments.
+This module provides a few functions that traverse their
+argument list and return a string containing Perl code that,
+when C<eval>ed, produces a deep copy of the original arguments.
 
 The main feature of the module is that it strives to produce output
 that is easy to read.  Example:

@@ -1,10 +1,9 @@
 Data::Dump
 ==========
 
-This module provide a few functions that traverse their
-argument and produces a string as its result.  The string contains
-Perl code that, when C<eval>ed, produces a deep copy of the original
-arguments.
+This module provides a few functions that traverse their
+argument list and return a string containing Perl code that,
+when C<eval>ed, produces a deep copy of the original arguments.
 
 The main feature of the module is that it strives to produce output
 that is easy to read.  Example:
@@ -25,7 +24,8 @@ you dump data that is more complex or there is a lot of it, line breaks
 are automatically added to keep it easy to read.
 
 Please refer to [Data::Dump's complete documentation](https://metacpan.org/pod/Data::Dump)
-for details on how to use this module, including which funcions it exports. Or (after installation) type:
+for details on how to use this module, including which funcions it
+exports. Or (after installation) type:
 
     perldoc Data::Dump
 
