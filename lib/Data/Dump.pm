@@ -1,19 +1,18 @@
 package Data::Dump;
 
 use strict;
-use vars qw(@EXPORT @EXPORT_OK $VERSION $DEBUG);
-use subs qq(dump);
+use subs qw(dump);
 
 require Exporter;
 *import = \&Exporter::import;
-@EXPORT = qw(dd ddx);
-@EXPORT_OK = qw(dump pp dumpf quote);
+our @EXPORT = qw(dd ddx);
+our @EXPORT_OK = qw(dump pp dumpf quote);
 
-$VERSION = "1.25";
-$DEBUG = 0;
+our $VERSION = "1.25";
+our $DEBUG = 0;
 
 use overload ();
-use vars qw(%seen %refcnt @dump @fixup %require $TRY_BASE64 @FILTERS $INDENT $LINEWIDTH);
+our (%seen, %refcnt, @dump, @fixup, %require, $TRY_BASE64, @FILTERS, $INDENT, $LINEWIDTH);
 
 $TRY_BASE64 = 50 unless defined $TRY_BASE64;
 $INDENT = "  " unless defined $INDENT;
