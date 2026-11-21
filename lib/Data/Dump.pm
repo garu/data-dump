@@ -224,6 +224,9 @@ sub _dump
 		}
 		$v =~ s/\Q$sep\E/\\$sep/g;
 
+		# quote sigils so eval'ing the dump doesn't interpolate them.
+		$v =~ s/(\\.)|(\@(?:[\{\[]+|(?=[\$\'\@:0-9A-Za-z_]|[^\x00-\x7F]))|\$(?![()| \t\r\n]|\z)[\{\[]*)/$1?$1:'${\\q(' . $2 . ')}'/ge;
+
 		$out = "qr$sep$v$sep$mod";
 		undef($class);
 	    }
