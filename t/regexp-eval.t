@@ -82,12 +82,21 @@ my %unchanged = (
     '@(?:x)'                   => 'qr/@(?:x)/',
 );
 
-plan tests => scalar(@sources) * 3 + 3 + scalar(keys %unchanged) + 2;
+my @mods = ('msix');
+push @mods, 'p'          if $] >= 5.010;
+push @mods, qw(a aa l u) if $] >= 5.014;
+push @mods, 'n'          if $] >= 5.022;
+push @mods, 'xx'         if $] >= 5.026;
+push @mods, 'aai'        if $] >= 5.014;
+push @mods, 'xxi'        if $] >= 5.026;
+
+plan tests => scalar(@sources) * 3 + 3 + scalar(keys %unchanged) + 2
+            + scalar(@mods) * 5 + 1;
 
 sub make_regexp {
-    my $source = shift;
+    my ($source, $mod) = @_;
     local $SIG{__WARN__} = sub { };
-    return qr/$source/;
+    return $mod ? eval 'qr/$source/' . $mod : qr/$source/;
 }
 
 sub eval_dump {
@@ -123,6 +132,33 @@ for my $source (@sources) {
     is($@, '', 'eval works for nested regex');
     is($RAN, 0, 'no code interpolation for nested regex');
     is($got, "$regexp", 'nested regex round-trips');
+}
+
+for my $mod (@mods) {
+    my $regexp = make_regexp('foo', $mod);
+    my $dump = dump($regexp);
+    my $restored = eval_dump($dump);
+    my $got = defined $restored ? "$restored" : '<undef>';
+
+    is($@, '', "eval works for /$mod");
+    is($got, "$regexp", "regex with /$mod round-trips");
+
+    my $payload = make_regexp('@{[ $main::RAN++ ]}', $mod);
+    local $RAN = 0;
+    my $payload_dump = dump($payload);
+    my $payload_restored = eval_dump($payload_dump);
+    my $payload_got = defined $payload_restored ? "$payload_restored" : '<undef>';
+
+    is($@, '', "eval works for payload with /$mod");
+    is($RAN, 0, "no interpolation with /$mod");
+    is($payload_got, "$payload", "payload with /$mod round-trips");
+}
+
+{
+    my $regexp = make_regexp('(?-i:foo)');
+    my $restored = eval_dump(dump($regexp));
+    is(defined $restored ? "$restored" : '<undef>', "$regexp",
+       'negative modifier round-trips');
 }
 
 is($foo, 'SCALAR-SENTINEL', 'scalar sentinel is in scope');
