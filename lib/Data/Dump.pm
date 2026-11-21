@@ -19,6 +19,13 @@ $TRY_BASE64 = 50 unless defined $TRY_BASE64;
 $INDENT = "  " unless defined $INDENT;
 $LINEWIDTH = 60 unless defined $LINEWIDTH;
 
+use constant HAVE_BOOLEANS => $^V ge v5.36.0;
+sub _is_bool
+{
+    no if HAVE_BOOLEANS, warnings => "experimental::builtin";
+    return HAVE_BOOLEANS ? builtin::is_bool($_[0]) : 0;
+}
+
 sub dump
 {
     local %seen;
@@ -229,6 +236,9 @@ sub _dump
 	} else {
 	    if (!defined $$rval) {
 		$out = "undef";
+	    }
+	    elsif (_is_bool $$rval) {
+	        $out = $$rval ? '!!1' : '!!0';
 	    }
 	    elsif ($$rval =~ /^-?(?:nan|inf)/i) {
 		$out = str($$rval);
